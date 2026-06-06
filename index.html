@@ -1190,8 +1190,9 @@
     🥞 Order Now
   </button>
 
+  <script src="config.js"></script>
   <script>
-    const API = '/api';
+    const API = window.AIRDOSA_API || '/api';
 
     // Navbar shadow on scroll
     const navbar = document.getElementById('navbar');

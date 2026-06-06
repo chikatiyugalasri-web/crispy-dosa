@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: crispy-dosa-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: FLASK_DEBUG
+        value: "false"

@@ -7,7 +7,10 @@ from pathlib import Path
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
-from storage import get_order_by_id, get_orders, save_order, save_subscription
+try:
+    from .storage import get_order_by_id, get_orders, save_order, save_subscription
+except ImportError:
+    from storage import get_order_by_id, get_orders, save_order, save_subscription
 
 ROOT = Path(__file__).resolve().parent.parent
 PORT = int(os.environ.get("PORT", 3001))
@@ -15,8 +18,16 @@ PORT = int(os.environ.get("PORT", 3001))
 DOSA_TYPES = ["plain", "masala", "mysore", "onion", "cheese"]
 ORDER_STATUSES = ["confirmed", "preparing", "in-flight", "delivered"]
 
+ALLOWED_ORIGINS = [
+    "https://chikatiyugalasri-web.github.io",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+]
+
 app = Flask(__name__, static_folder=str(ROOT), static_url_path="")
-CORS(app)
+CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=False)
 
 
 def generate_order_id():
@@ -192,5 +203,6 @@ def serve_frontend(path):
 
 
 if __name__ == "__main__":
+    debug = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
     print(f"AirDosa API (Python) running at http://localhost:{PORT}")
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=debug)
