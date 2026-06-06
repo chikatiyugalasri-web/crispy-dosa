@@ -717,6 +717,169 @@
       60% { transform: translateY(-6px); }
     }
 
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(20px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h3 {
+      font-size: 1.4rem;
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      line-height: 1;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--saffron);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-error {
+      color: #dc2626;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    .form-success {
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .form-success .success-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-success h4 {
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-success p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    .order-id-badge {
+      display: inline-block;
+      background: rgba(13, 148, 136, 0.1);
+      color: var(--teal);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-top: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .track-status {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--cream);
+      border-radius: 12px;
+    }
+
+    .track-status .status-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .track-status .status-step.active {
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    .track-status .status-step.done {
+      color: var(--dark);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .hero-content {
@@ -776,7 +939,7 @@
           India's first AI-powered drone dosa delivery. Hot, fresh, and at your doorstep in under 8 minutes — because hunger doesn't wait.
         </p>
         <div class="hero-cta">
-          <a href="#pricing" class="btn-primary">🚀 Order Your First Dosa</a>
+          <button type="button" class="btn-primary" data-open-order data-plan="starter">🚀 Order Your First Dosa</button>
           <a href="#features" class="btn-secondary">See How It Works</a>
         </div>
         <div class="stats-row">
@@ -852,7 +1015,7 @@
           <li>3 chutney varieties</li>
           <li>Basic order tracking</li>
         </ul>
-        <button class="btn-plan btn-plan-outline">Get Started</button>
+        <button type="button" class="btn-plan btn-plan-outline" data-open-order data-plan="starter">Get Started</button>
       </div>
       <div class="pricing-card featured" data-delay="150">
         <span class="pricing-badge">MOST POPULAR</span>
@@ -866,7 +1029,7 @@
           <li>Live drone tracking map</li>
           <li>Exclusive masala dosa access</li>
         </ul>
-        <button class="btn-plan btn-plan-filled">Subscribe Now</button>
+        <button type="button" class="btn-plan btn-plan-filled" data-open-subscribe>Subscribe Now</button>
       </div>
     </div>
   </section>
@@ -894,7 +1057,7 @@
         <h4>Support</h4>
         <ul>
           <li><a href="#">Help Center</a></li>
-          <li><a href="#">Track Order</a></li>
+          <li><a href="#" data-open-track>Track Order</a></li>
           <li><a href="#">Safety</a></li>
           <li><a href="#">FAQs</a></li>
         </ul>
@@ -919,12 +1082,117 @@
     </div>
   </footer>
 
+  <!-- Order Modal -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🥞 Place Your Order</h3>
+        <button type="button" class="modal-close" data-close-modal>&times;</button>
+      </div>
+      <form id="orderForm">
+        <div class="form-group">
+          <label for="orderName">Full Name</label>
+          <input type="text" id="orderName" name="name" placeholder="Ravi Kumar" required />
+        </div>
+        <div class="form-group">
+          <label for="orderPhone">Phone</label>
+          <input type="tel" id="orderPhone" name="phone" placeholder="9876543210" required />
+        </div>
+        <div class="form-group">
+          <label for="orderAddress">Delivery Address</label>
+          <textarea id="orderAddress" name="address" placeholder="Flat 4B, Koramangala, Bengaluru" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="orderDosa">Dosa Type</label>
+          <select id="orderDosa" name="dosaType" required>
+            <option value="plain">Plain Dosa</option>
+            <option value="masala">Masala Dosa</option>
+            <option value="mysore">Mysore Masala</option>
+            <option value="onion">Onion Dosa</option>
+            <option value="cheese">Cheese Dosa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="orderQty">Quantity</label>
+          <input type="number" id="orderQty" name="quantity" min="1" max="10" value="1" required />
+        </div>
+        <input type="hidden" id="orderPlan" name="plan" value="starter" />
+        <p class="form-error" id="orderError"></p>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Place Order — ₹99</button>
+      </form>
+      <div class="form-success" id="orderSuccess" hidden>
+        <div class="success-icon">🛸</div>
+        <h4>Order Confirmed!</h4>
+        <p>Your drone is on its way with hot dosas.</p>
+        <div class="order-id-badge" id="orderIdDisplay"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subscribe Modal -->
+  <div class="modal-overlay" id="subscribeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>✨ Dosa Pass</h3>
+        <button type="button" class="modal-close" data-close-modal>&times;</button>
+      </div>
+      <form id="subscribeForm">
+        <div class="form-group">
+          <label for="subName">Full Name</label>
+          <input type="text" id="subName" name="name" placeholder="Priya Sharma" required />
+        </div>
+        <div class="form-group">
+          <label for="subEmail">Email</label>
+          <input type="email" id="subEmail" name="email" placeholder="you@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="subPhone">Phone</label>
+          <input type="tel" id="subPhone" name="phone" placeholder="9876543210" required />
+        </div>
+        <p class="form-error" id="subscribeError"></p>
+        <button type="submit" class="btn-plan btn-plan-filled" style="width:100%;">Subscribe — ₹499/month</button>
+      </form>
+      <div class="form-success" id="subscribeSuccess" hidden>
+        <div class="success-icon">🎉</div>
+        <h4>Welcome to Dosa Pass!</h4>
+        <p>Unlimited crispy dosas, one flight at a time.</p>
+        <div class="order-id-badge" id="subIdDisplay"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Track Order Modal -->
+  <div class="modal-overlay" id="trackModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📍 Track Your Order</h3>
+        <button type="button" class="modal-close" data-close-modal>&times;</button>
+      </div>
+      <form id="trackForm">
+        <div class="form-group">
+          <label for="trackId">Order ID</label>
+          <input type="text" id="trackId" name="orderId" placeholder="AD-XXXXXX" required />
+        </div>
+        <p class="form-error" id="trackError"></p>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Track Order</button>
+      </form>
+      <div id="trackResult" hidden>
+        <div class="track-status" id="trackStatus"></div>
+        <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-light);">
+          ETA: <strong id="trackEta"></strong> min · <span id="trackDosa"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Order Now Button -->
-  <button class="floating-order" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">
-  🥞 Order Now
+  <button type="button" class="floating-order" data-open-order data-plan="starter">
+    🥞 Order Now
   </button>
 
   <script>
+    const API = '/api';
+
     // Navbar shadow on scroll
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -948,7 +1216,6 @@
 
     revealElements.forEach(el => observer.observe(el));
 
-    // Stagger section header children
     document.querySelectorAll('.reveal').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(30px)';
@@ -966,6 +1233,199 @@
     }, { threshold: 0.3 });
 
     document.querySelectorAll('.reveal').forEach(el => headerObserver.observe(el));
+
+    // ── Modal helpers ──
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(overlay) {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function resetModal(overlay) {
+      overlay.querySelectorAll('form').forEach(f => f.reset());
+      overlay.querySelectorAll('.form-error').forEach(e => e.classList.remove('visible'));
+      overlay.querySelectorAll('.form-success').forEach(s => s.hidden = true);
+      overlay.querySelectorAll('form').forEach(f => f.hidden = false);
+      const trackResult = overlay.querySelector('#trackResult');
+      if (trackResult) trackResult.hidden = true;
+    }
+
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const overlay = btn.closest('.modal-overlay');
+        closeModal(overlay);
+        resetModal(overlay);
+      });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          closeModal(overlay);
+          resetModal(overlay);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-open-order]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.dataset.plan || 'starter';
+        document.getElementById('orderPlan').value = plan;
+        const qty = document.getElementById('orderQty').value || 1;
+        document.querySelector('#orderForm button[type="submit"]').textContent =
+          plan === 'dosa-pass' ? 'Place Order — Dosa Pass' : `Place Order — ₹${99 * qty}`;
+        resetModal(document.getElementById('orderModal'));
+        openModal('orderModal');
+      });
+    });
+
+    document.getElementById('orderQty').addEventListener('input', (e) => {
+      const plan = document.getElementById('orderPlan').value;
+      if (plan !== 'dosa-pass') {
+        document.querySelector('#orderForm button[type="submit"]').textContent =
+          `Place Order — ₹${99 * (e.target.value || 1)}`;
+      }
+    });
+
+    document.querySelectorAll('[data-open-subscribe]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        resetModal(document.getElementById('subscribeModal'));
+        openModal('subscribeModal');
+      });
+    });
+
+    document.querySelectorAll('[data-open-track]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        resetModal(document.getElementById('trackModal'));
+        openModal('trackModal');
+      });
+    });
+
+    // ── API: Place Order ──
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('orderError');
+      errEl.classList.remove('visible');
+
+      const data = {
+        name: document.getElementById('orderName').value,
+        phone: document.getElementById('orderPhone').value,
+        address: document.getElementById('orderAddress').value,
+        dosaType: document.getElementById('orderDosa').value,
+        quantity: Number(document.getElementById('orderQty').value),
+        plan: document.getElementById('orderPlan').value,
+      };
+
+      try {
+        const res = await fetch(`${API}/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+          errEl.textContent = json.errors?.join(', ') || 'Order failed. Please try again.';
+          errEl.classList.add('visible');
+          return;
+        }
+
+        document.getElementById('orderForm').hidden = true;
+        document.getElementById('orderIdDisplay').textContent = json.order.orderId;
+        document.getElementById('orderSuccess').hidden = false;
+      } catch {
+        errEl.textContent = 'Cannot reach server. Run: pip install -r requirements.txt && npm run dev';
+        errEl.classList.add('visible');
+      }
+    });
+
+    // ── API: Subscribe ──
+    document.getElementById('subscribeForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('subscribeError');
+      errEl.classList.remove('visible');
+
+      const data = {
+        name: document.getElementById('subName').value,
+        email: document.getElementById('subEmail').value,
+        phone: document.getElementById('subPhone').value,
+      };
+
+      try {
+        const res = await fetch(`${API}/subscriptions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+          errEl.textContent = json.errors?.join(', ') || 'Subscription failed.';
+          errEl.classList.add('visible');
+          return;
+        }
+
+        document.getElementById('subscribeForm').hidden = true;
+        document.getElementById('subIdDisplay').textContent = json.subscription.subscriptionId;
+        document.getElementById('subscribeSuccess').hidden = false;
+      } catch {
+        errEl.textContent = 'Cannot reach server. Run: pip install -r requirements.txt && npm run dev';
+        errEl.classList.add('visible');
+      }
+    });
+
+    // ── API: Track Order ──
+    const STATUS_LABELS = {
+      confirmed: '✅ Order Confirmed',
+      preparing: '👨‍🍳 Dosa on the Tawa',
+      'in-flight': '🛸 Drone In Flight',
+      delivered: '🥞 Delivered!',
+    };
+
+    document.getElementById('trackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('trackError');
+      const resultEl = document.getElementById('trackResult');
+      errEl.classList.remove('visible');
+      resultEl.hidden = true;
+
+      const orderId = document.getElementById('trackId').value.trim().toUpperCase();
+
+      try {
+        const res = await fetch(`${API}/orders/${orderId}`);
+        const json = await res.json();
+
+        if (!res.ok) {
+          errEl.textContent = json.message || 'Order not found';
+          errEl.classList.add('visible');
+          return;
+        }
+
+        const { order } = json;
+        const steps = ['confirmed', 'preparing', 'in-flight', 'delivered'];
+        const currentIdx = steps.indexOf(order.status);
+
+        document.getElementById('trackStatus').innerHTML = steps.map((s, i) => {
+          let cls = 'status-step';
+          if (i < currentIdx) cls += ' done';
+          if (i === currentIdx) cls += ' active';
+          return `<div class="${cls}">${STATUS_LABELS[s]}</div>`;
+        }).join('');
+
+        document.getElementById('trackEta').textContent = order.etaMinutes;
+        document.getElementById('trackDosa').textContent =
+          `${order.quantity}x ${order.dosaType} dosa`;
+        resultEl.hidden = false;
+      } catch {
+        errEl.textContent = 'Cannot reach server. Run: pip install -r requirements.txt && npm run dev';
+        errEl.classList.add('visible');
+      }
+    });
   </script>
 </body>
 </html>
