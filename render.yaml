@@ -10,3 +10,7 @@ services:
         value: 3.13.0
       - key: FLASK_DEBUG
         value: "false"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

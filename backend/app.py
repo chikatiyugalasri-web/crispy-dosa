@@ -8,9 +8,21 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 try:
-    from .storage import get_order_by_id, get_orders, save_order, save_subscription
+    from .storage import (
+        get_order_by_id,
+        get_orders,
+        save_order,
+        save_subscription,
+        storage_mode,
+    )
 except ImportError:
-    from storage import get_order_by_id, get_orders, save_order, save_subscription
+    from storage import (
+        get_order_by_id,
+        get_orders,
+        save_order,
+        save_subscription,
+        storage_mode,
+    )
 
 ROOT = Path(__file__).resolve().parent.parent
 PORT = int(os.environ.get("PORT", 3001))
@@ -102,11 +114,21 @@ def current_order_status(order):
 
 @app.get("/api/health")
 def health():
-    return jsonify({
+    mode = storage_mode()
+    payload = {
         "status": "ok",
         "service": "AirDosa API (Python)",
+        "database": mode,
         "timestamp": datetime.now(timezone.utc).isoformat(),
-    })
+    }
+    if mode == "supabase":
+        try:
+            get_orders()
+            payload["databaseStatus"] = "connected"
+        except Exception as exc:
+            payload["status"] = "degraded"
+            payload["databaseStatus"] = str(exc)
+    return jsonify(payload)
 
 
 @app.post("/api/orders")
